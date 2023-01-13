@@ -22,4 +22,4 @@ jobs:
         echo "${{ secrets.DOCKERPW }}" | docker login -u "${{ secrets.DOCKERUSERNAME }}" --password-stdin
         docker image build -t dab8106/pyflask:latest .
         docker push dab8106/pyflask:latest
-      working-directory: "{{ env.TF_ROOT }}"
+      working-directory: "${{ env.TF_ROOT }}"
