@@ -23,3 +23,12 @@ jobs:
         docker image build . -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:latest" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:v2" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:v3"
         docker push "${{ secrets.DOCKERUSERNAME }}"/nginx-hello --all-tags
       working-directory: "${{ env.TF_ROOT }}"
+
+    - name: save docker image to tar archive
+      run: docker save -o image.tar "${{ secrets.DOCKERUSERNAME }}/nginx-hello:latest"
+
+    - name: publish image to artifacts
+      uses: actions/upload-artifacts@v2
+      with:
+        name: nginx-image-tar
+        path: image.tar
