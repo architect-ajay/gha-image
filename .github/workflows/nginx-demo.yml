@@ -34,6 +34,6 @@ jobs:
         path: image.tar
 
     - name: clean up artifacts
-      uses: architactaj/delete-artifact@v1
+      uses: architectaj/delete-artifact@v1
       with:
         name: nginx-image-tar
