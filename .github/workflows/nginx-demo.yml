@@ -3,8 +3,8 @@ name: NGINX Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 env:
   TF_ROOT: "./nginx-hello/"
@@ -20,7 +20,7 @@ jobs:
     - name: Build & Push Image
       run: |
         echo "${{ secrets.DOCKERPW }}" | docker login -u "${{ secrets.DOCKERUSERNAME }}" --password-stdin
-        docker image build . -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:latest" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:v2" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:v3" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:${{ github.eveent.number }}"
+        docker image build . -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:latest" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:v2" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:v3" -t "${{ secrets.DOCKERUSERNAME }}/nginx-hello:${{ github.event.number }}"
         docker push "${{ secrets.DOCKERUSERNAME }}"/nginx-hello --all-tags
       working-directory: "${{ env.TF_ROOT }}"
 
