@@ -16,10 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build & Push Image
-      run: |
-        echo "${{ secrets.DOCKERPW }}" | docker login -u "${{ secrets.DOCKERUSERNAME }}" --password-stdin
-        docker image build -t "${{ secrets.DOCKERUSERNAME }}"/gha-image:v1 .
-        docker push "${{ secrets.DOCKERUSERNAME }}"/gha-image:v1
-      working-directory: "${{ env.TF_ROOT }}"
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Generate Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            docker.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=true
+      - name: Build & Push Image
+        run: |
+          echo "${{ secrets.DOCKERPW }}" | docker login -u "${{ secrets.DOCKERUSERNAME }}" --password-stdin
+          docker image build -t "${{ steps.meta.outputs.tags }}" .
+          docker push "${{ steps.meta.outputs.tags }}"
+        working-directory: "${{ env.TF_ROOT }}"
